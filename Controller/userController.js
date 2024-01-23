@@ -2,10 +2,7 @@
 import bcrypt from 'bcrypt'
 import {User} from '../Models/UserModel.js';
 import crypto from 'crypto'
-
 import jwt from 'jsonwebtoken'
-import { Url } from '../Models/UrlModel.js';
-
 
 //function to handle new user registration
 export const Register=async(req,res)=>{
@@ -44,8 +41,6 @@ const activationurl=`https://url-shortner96.netlify.app/activate/${ActivationKey
 
 
 //function to handle the Login process
-
-
 export const Login=async(req,res)=>{
     try {
         const {email,password}=req.body;
@@ -73,15 +68,11 @@ const jwttoken = jwt.sign({id:user._id}, process.env.SECRET_KEY);
     catch (error) {
         console.log(error);
         res.status(500).send("Internal server Error")
-        
     }
-
 }
-
 
 //function to activate the account
 export const Activate=async(req,res)=>{
-
 try {
 
     const  {activationKey}=req.params ;
@@ -97,14 +88,9 @@ try {
     
 } catch (error) {
     res.status(500).send('Internal server error');
-    console.log(error)
-    
+    console.log(error)   
 }
-
-
 }
-
-
 
 //function to handle Forget Password 
 export const Forget = async(req,res)=>{
@@ -133,13 +119,11 @@ export const Forget = async(req,res)=>{
     } catch (error) {
         console.log("User email not found",error);
         res.status(500).send("Error occured ",error);
-    }
-    
-    
-    }
+    }    
+  }
 
-    export //function for resetting password
-    const Reset=async(req,res)=>{
+//function for resetting password
+export const Reset=async(req,res)=>{
     try {
         const { resetToken } = req.params;
         const { password } = req.body;
@@ -161,9 +145,7 @@ export const Forget = async(req,res)=>{
         
     } catch (error) {
         res.status(500).send('Internal server error');
-        console.log(error)
-        
+        console.log(error)   
     }
-    
-    }
+  }
     
