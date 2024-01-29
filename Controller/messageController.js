@@ -36,4 +36,21 @@ const sendMsg = async (req,res)=>{
    }
 }
 
+//get all message
+export const allMessage=async(req,res)=>{
+     
+    try {
+    
+        const message=await Message.find({chat:req.params.chatId})
+        .populate("sender","name pic email")
+        .populate("chat")
+
+        return res.status(200).json(message);
+        
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Internal Server Error");   
+    }
+}
+
 export {sendMsg}

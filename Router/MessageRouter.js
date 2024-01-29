@@ -1,5 +1,5 @@
 import express from 'express'
-import { sendMsg } from '../Controller/messageController.js';
+import { allMessage, sendMsg } from '../Controller/messageController.js';
 
 
 const router=express.Router();
@@ -7,8 +7,8 @@ const router=express.Router();
 //Post personal Message
 router.route("/sendMsg").post(sendMsg);
 
-//to get all my Messages
-// router.route("/getMsg").get(getMsg);
+//get all messages
+router.route("/:chatId").get(allMessage);
 
 // //to create a group chat
 // router.route("/group").post(createGroupChat);
