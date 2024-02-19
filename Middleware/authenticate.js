@@ -1,4 +1,5 @@
 import  jwt from "jsonwebtoken";
+// import { User } from "../Model/userModel.js";
 import { User } from "../Model/userModel.js";
 
 function getUserById(id) {
