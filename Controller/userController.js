@@ -1,10 +1,30 @@
-import express from "express";
 import { User } from "../Model/userModel.js";
 // import {Email} from "../models/Email.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 // import {sendMail} from "../service/service.js";
+
+export const allUsers = async (req, res) => {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
+      try {
+        const users = await User.find({
+            ...keyword,
+            _id: { $ne: req.user._id } 
+        }).select('-password');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).send({ message: "Internal server error" });
+    }
+  };
+
 
 //Register a User
 export const Register = async (req, res)=>{
