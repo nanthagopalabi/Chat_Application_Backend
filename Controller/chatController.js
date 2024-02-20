@@ -1,5 +1,5 @@
 import {Chat} from "../model/chatModel.js"
-import { User } from "../model/userModel.js";
+import {User} from './model/userModel.js';
 
 export const accessChat=async(req,res)=>{
     const {userId}=req.body;
@@ -12,7 +12,7 @@ var isChat=await Chat.find({
     isGroupChat:false,
     $and:[
         {users:{$elemMatch:{$eq:req.user._id}}},
-        {users:{$elemMatch:{$eq:userId}}},
+        {users:{$selemMatch:{$eq:userId}}},
     ]    
 }).populate("users","-password").populate("latestMessage");
 
