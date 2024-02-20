@@ -17,4 +17,4 @@ router.route("/groupremove").put(removeUserFromGroup);
 router.route("/groupadd").put(addFromGroup);
 
 
-export {router as ChatRouter}
+export {router as chatRouter}

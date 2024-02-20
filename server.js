@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { dataBaseConnection } from "./Config/db.js";
 import { userRouter } from "./Router/UserRouter.js";
 import { isAuthorized } from "./Middleware/authenticate.js";
-import {ChatRouter} from "./Router/chatRouter.js";
+import {chatRouter} from "./Router/chatRouter.js";
 import { MsgRouter } from "./Router/messageRouter.js";
 
 //configure env variables
@@ -23,7 +23,7 @@ app.use(express.json());
 
 //routes
 app.use("/api", userRouter);
-app.use("/chat",isAuthorized, ChatRouter);
+app.use("/chat",isAuthorized, chatRouter);
 app.use("/message", isAuthorized, MsgRouter)
 
 //listen the server
