@@ -1,8 +1,8 @@
 import express from "express";
-import { Register, allUsers } from "../controller/userController.js";
-import { Login } from "../controller/userController.js";
-import { Forget } from "../controller/userController.js";
-import { ResetToken } from "../controller/userController.js";
+import { Register, allUsers } from "../controllers/userController.js";
+import { Login } from "../controllers/userController.js";
+import { Forget } from "../controllers/userController.js";
+import { ResetToken } from "../controllers/userController.js";
 import { isAuthorized } from "../middleware/authenticate.js";
 
 const router = express.Router();
