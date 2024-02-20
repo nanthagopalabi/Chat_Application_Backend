@@ -2,10 +2,11 @@ import  express  from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { dataBaseConnection } from "./Config/db.js";
-import { userRouter } from "./router/userRouter.js";
-import { isAuthorized } from "./middleware/authenticate.js";
-import {chatRouter} from "./router/chatRouter.js";
-import { msgRouter } from "./router/messageRouter.js";
+// import { userRouter } from "./Router/userRouter.js";
+import { userRouter } from "./route/userRouter.js";
+import { isAuthorized } from "./middlewar/authenticate.js";
+import {chatRouter} from "./route/chatRouter.js";
+import { msgRouter } from "./route/messageRouter.js";
 
 //configure env variables
 dotenv.config();
