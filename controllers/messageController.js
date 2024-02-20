@@ -1,5 +1,5 @@
-import { Chat } from "../model/chatModel.js";
-import { Message } from "../model/messageModel.js";
+import { Chat } from "../models/chatModel.js";
+import { Message } from "../models/messageModel.js";
 import { User } from "../model/userModel.js";
 
 //Send Message

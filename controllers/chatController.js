@@ -1,4 +1,4 @@
-import {Chat} from "../model/chatModel.js"
+import {Chat} from "../models/chatModel.js"
 import { User } from "../model/userModel.js";
 
 export const accessChat=async(req,res)=>{
