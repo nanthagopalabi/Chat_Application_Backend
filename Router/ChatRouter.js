@@ -1,5 +1,5 @@
 import express from 'express'
-import { accessChat, addFromGroup, createGroupChat, getChat, groupRenaming, removeUserFromGroup } from '../controller/chatController.js';
+import { accessChat, addFromGroup, createGroupChat, getChat, groupRenaming, removeUserFromGroup } from '../Controller/chatController.js';
 
 const router=express.Router();
 

@@ -1,9 +1,9 @@
 import express from "express";
-import { Register, allUsers } from "../controller/userController.js";
-import { Login } from "../controller/userController.js";
-import { Forget } from "../controller/userController.js";
-import { ResetToken } from "../controller/userController.js";
-import { isAuthorized } from "./middleware/authenticate.js";
+import { Register, allUsers } from "../Controller/userController.js";
+import { Login } from "../Controller/userController.js";
+import { Forget } from "../Controller/userController.js";
+import { ResetToken } from "../Controller/userController.js";
+import { isAuthorized } from "../Middleware/authenticate.js";
 
 const router = express.Router();
 
