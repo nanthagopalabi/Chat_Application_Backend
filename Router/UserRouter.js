@@ -22,4 +22,4 @@ router.post("/forget",Forget);
 //Password Reset
 router.post("/reset",ResetToken);
 
-export const userRouter = router
+export {router as userRouter}
