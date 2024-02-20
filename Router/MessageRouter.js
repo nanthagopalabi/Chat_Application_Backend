@@ -18,4 +18,4 @@ router.route("/:chatId").get(allMessage);
 // router.route("/groupadd").put(addFromGroup);
 
 
-export {router as MsgRouter}
+export {router as msgRouter}
