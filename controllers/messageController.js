@@ -1,6 +1,6 @@
 import { Chat } from "../models/chatModel.js";
 import { Message } from "../models/messageModel.js";
-import { User } from "../model/userModel.js";
+import { User } from "../models/userModel.js";
 
 //Send Message
 const sendMsg = async (req,res)=>{
