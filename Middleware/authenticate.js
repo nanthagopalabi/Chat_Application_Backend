@@ -1,6 +1,5 @@
 import  jwt from "jsonwebtoken";
-// import {User} from "../Model/userModel.js";
-import User from "../Model/userModel";
+import {User} from "../Model/userModel.js";
 
 function getUserById(id) {
     return User.findById(id).select("_id name email");
