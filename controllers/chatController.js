@@ -12,7 +12,7 @@ var isChat=await Chat.find({
     isGroupChat:false,
     $and:[
         {users:{$elemMatch:{$eq:req.user._id}}},
-        {users:{$selemMatch:{$eq:userId}}},
+        {users:{$elemMatch:{$eq:userId}}},
     ]    
 }).populate("users","-password").populate("latestMessage");
 
