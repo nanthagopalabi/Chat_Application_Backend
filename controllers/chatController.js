@@ -35,10 +35,10 @@ try {
     const createChat=await Chat.create(chatData);
     const FullChat= await Chat.findOne({_id:createChat._id}).populate("users","-password");
 
-    res.status(200).send(FullChat);
+    return res.status(200).send(FullChat);
     
 } catch (error) {
-    res.status(400).send(error);
+    return res.status(400).send(error);
 }
 }
 
