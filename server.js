@@ -28,6 +28,10 @@ app.use("/api", userRouter);
 app.use("/chat",isAuthorized, chatRouter);
 app.use("/message", isAuthorized, msgRouter)
 
+app.get("/",(req,res)=>{
+    res.status(200).send("server working");
+})
+
 // Object to track online users
 const onlineUsers = {};
 
@@ -90,6 +94,6 @@ const io = new Server(httpServer, {
 });
 
 //listen the server
-app.listen(PORT, ()=>{
+httpServer.listen(PORT, ()=>{
     console.log(`Server started in localhost:${PORT}`);
 })
