@@ -43,28 +43,30 @@ try {
 }
 
 //function to get  chat history
-export const getChat=async (req,res)=>{
+export const getChat = async (req, res) => {
+  try {
+      const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+          .populate({
+              path: "users",
+              select: "-password" // Exclude sensitive information like password
+          })
+          .populate("groupAdmin", "-password")
+          .populate({
+              path: "latestMessage",
+              populate: { path: "sender", select: "name pic email" }
+          })
+          .sort({ updatedAt: -1 });
 
-    try {
-        Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-          .populate("users", "-password")
-        //   .populate("groupAdmin", "-password")
-          .populate("latestMessage")
-          .sort({ updatedAt: -1 })
-          .then(async (results) => {
-            
-            results = await User.populate(results, {
-              path: "latestMessage.sender",
-              select: "name pic email",
-            });
-            res.status(200).send(results);
-          });
-      } catch (error) {
-        res.status(400);
-        throw new Error(error.message);
+      if (!chats) {
+          return res.status(404).json({ error: "Chats not found." });
       }
-}
 
+      return res.status(200).json(chats);
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 //to create group chat
 export const createGroupChat = async (req, res) => {
@@ -74,6 +76,7 @@ export const createGroupChat = async (req, res) => {
   
     // var users = JSON.parse(req.body.users);
     const users=req.body.users
+    users.push(req.user);
   
     if (users.length < 2) {
       return res
@@ -81,7 +84,6 @@ export const createGroupChat = async (req, res) => {
         .send("More than 2 users are required to form a group chat");
     }
   
-    users.push(req.user);
   
     try {
       const groupChat = await Chat.create({
@@ -184,42 +186,28 @@ export const addFromGroup=async(req,res)=>{
        const { chatId, userId } = req.body;
        const chat = await Chat.findById(chatId);
 
- if (!chat) {
-   res.status(404);
-   throw new Error("Chat Not Found");
- }
+       if (!chatId || !userId) {
+        return res.status(400).json({ error: "Chat ID or User ID is missing." });
+    }
+
+    // Using the Chat document by pulling the userId from the 'users' array
+    const addNew = await Chat.findByIdAndUpdate(
+      chatId,
+      { $addToSet: { users: userId } }, // Using $addToSet to prevent adding duplicate users
+      { new: true }
+      ).populate("users", "-password").populate("groupAdmin", "-password");
 
 
- // Check if the requester's ID is in the 'groupAdmin' array
- if (chat.groupAdmin.toString() !== req.user._id.toString()) {
-   res.status(403);
-   throw new Error("Permission Denied: Only admins can perform this action");
- }
+      // Check if the Chat document was not found
+      if (!addNew) {
+        res.status(404);
+        throw new Error("Unable to Add");
+      } else {
+        return  res.status(200).json(addNew);
+      }       
 
- // Using the Chat document by pulling the userId from the 'users' array
- const addNew = await Chat.findByIdAndUpdate(
-   chatId,
-   {
-     $push: { users: userId },
-   },
-   {
-     new: true,
-   }
- )
-   .populate("users", "-password")
-   .populate("groupAdmin", "-password");
-
- // Check if the Chat document was not found
- if (!addNew) {
-   res.status(404);
-   throw new Error("Unable to Add");
- } else {
-  return  res.status(200).json(addNew);
-
-}       
     } catch (error) {
        console.error(error);
        return res.status(500).send("Internal Server Error");
-       
     }
 }  
