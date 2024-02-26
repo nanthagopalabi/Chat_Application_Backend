@@ -35,10 +35,6 @@ app.get("/",(req,res)=>{
 const onlineUsers = {};
 
 const httpServer = createServer(app);
-
-// Apply cors middleware to the HTTP server
-httpServer.use(cors());
-
 const io = new Server(httpServer, { 
     cors:{
         origin:"*",
