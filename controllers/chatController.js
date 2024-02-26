@@ -5,7 +5,7 @@ export const accessChat=async(req,res)=>{
     const {userId}=req.body;
 
     if(!userId){
-        console.log("UserId param not sent with req");
+        // console.log("UserId param not sent with req");
     return res.status(400).send("unable to find the userId");}
 
 var isChat=await Chat.find({
@@ -103,10 +103,9 @@ export const createGroupChat = async (req, res) => {
       
     }
   };
-  
 
-  //group rename
-  export const groupRenaming=async(req,res)=>{
+//group rename
+export const groupRenaming=async(req,res)=>{
 
     try {
        const {chatId,chatName}=req.body
@@ -130,9 +129,8 @@ export const createGroupChat = async (req, res) => {
     }
   }
 
-
-  //removing user from group
-  export const removeUserFromGroup=async(req,res)=>{      
+//removing user from group
+export const removeUserFromGroup=async(req,res)=>{      
     
      try {
         const { chatId, userId } = req.body;
@@ -178,18 +176,16 @@ export const createGroupChat = async (req, res) => {
      }
 }
 
-
 //Add new person to group
 export const addFromGroup=async(req,res)=>{      
     
     try {
        const { chatId, userId } = req.body;
-       const chat = await Chat.findById(chatId);
 
        if (!chatId || !userId) {
         return res.status(400).json({ error: "Chat ID or User ID is missing." });
     }
-
+    
     // Using the Chat document by pulling the userId from the 'users' array
     const addNew = await Chat.findByIdAndUpdate(
       chatId,
