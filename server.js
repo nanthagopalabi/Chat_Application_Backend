@@ -23,9 +23,6 @@ dataBaseConnection();
 app.use(cors());
 app.use(express.json());
 
-// Apply cors middleware to the HTTP server
-httpServer.use(cors());
-
 //routes
 app.use("/api", userRouter);
 app.use("/chat",isAuthorized, chatRouter);
@@ -38,6 +35,10 @@ app.get("/",(req,res)=>{
 const onlineUsers = {};
 
 const httpServer = createServer(app);
+
+// Apply cors middleware to the HTTP server
+httpServer.use(cors());
+
 const io = new Server(httpServer, { 
     cors:{
         origin:"*",
