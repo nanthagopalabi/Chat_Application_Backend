@@ -14,7 +14,7 @@ router.post ("/register",Register);
 router.post("/login",Login);
 
 //get All User
-router.get("/alluser", isAuthorized,allUsers);
+router.get("/all_user", isAuthorized,allUsers);
 
 //Forget Password
 router.post("/forget",Forget);
