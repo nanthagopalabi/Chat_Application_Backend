@@ -27,87 +27,103 @@ export const allUsers = async (req, res) => {
 
 
 //Register a User
-export const Register = async (req, res)=>{
-    try {
-        const {name, email, password} = req.body;
-        const user = await User.findOne({email: email});
-        console.log(req.body);
-        if(user){
-           return res.status(404).json({
-                message: "User Already Exist"
-            });
-        }
+export const Register=async(req,res)=>{ 
+    try{
+        // Check if this user already exisits
+    let user = await User.findOne({ email: req.body.email });
+    // console.log(user)
+    if (user) {
+      return res.status(400).send('That user already exisits!');}
 
-        const salt = await bcrypt.genSalt(10);
-        const hassedPassword = await bcrypt.hash(req.body.password,salt);
-        console.log("hassedPassword", hassedPassword);
-        const newUser = await new User({...req.body, password: hassedPassword});
-        newUser.save();
-        res.status(201).json({
-            message: "Registered Successfully"
-        });
-    } catch (error) {
-        res.status(400).json({
-            error: "Registeration Failed"
-        });
+    const {password}=req.body;
+    const hashedPassword = await bcrypt.hash(password,10);
+  
+    const newUser= await new User({ ...req.body, password: hashedPassword }).save();  
+    res.status(201).json({
+        status:'success',
+        message:"new user created"
+    })
+    }catch(err){
+        console.log("error in creating new user",err);
+        res.status(500).send("Internal Error");
     }
 }
 
 //User Login
-export const Login = async (req, res)=>{
-    try {
-        const {email, password} = req.body;
-        const user = await User.findOne({email: email});
-        if(!user){
-            return res.status(404).json({
-                message: "User not found"
-            });
-        };
-        const passwordMatch = await bcrypt.compare(req.body.password, user.password);
-        if(!passwordMatch){
-            return res.status(400).json({
-                message: "Password Missmatching"
-            })
-        }
-        const jwtToken = jwt.sign({payload: user._id}, process.env.SECRET_KEY);
-        res.status(200).json({
-            jwtToken,
-            message: "Login Successful"
-        });
-       } catch (error) {
-        res.status(400).json({
-            error: "Unable to Logging in"
-        })
-        }
-    };
-
-    //Forget Passsword
-    export const Forget = async (req, res)=>{
+    export const Login=async(req,res)=>{
         try {
-            const {email} = req.body;
-            const checkEmail = await User.findOne({email: email});
-            if(!checkEmail){
-                return res.status(404).json({
-                    message: "Email Not Registered!!!"
-                })
-            }
-            const token = crypto.randomBytes(20).toString("hex");
-            checkEmail.token = token;
-            checkEmail.save();
-            sendMail(email, "password Reset", `Reset Link ${token}`);
+            const {email,password}=req.body;
+            let user= await User.findOne({email:email});
+
+    if (!user) {
+        return res.status(401).json({ message: "Email is not Registered" });
+        }
     
-            res.status(200).json({
-                message: "Password Reset Successfully"
-            });
-        } catch (error) {
-            res.status(400).json({
-                error: "Error Occured"
-            })
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+            return res.status(401).json({ message: "Wrong Password" });
+        }
+            
+    const jwttoken = jwt.sign({id:user._id}, process.env.SECRET_KEY);
+            
+            res.status(200).json({ jwttoken,user:user._id,message:"login success" });    
+        } 
+        catch (error) {
+            console.log(error);
+            res.status(500).send("Internal server Error")        
         }
     }
 
-    //Reset token
-    export const ResetToken = async(req,res)=>{
+//function to activate the account
+export const Activate=async(req,res)=>{
+
+    try {
+    
+        const  {activationKey}=req.params ;
+        const decode = jwt.verify(activationKey, process.env.SECRET_KEY).id;
+        const user=await User.findOne({email:decode});
+        if(!user){
+    
+            return res.status(404).json({message:"Unable to Find User"});
+        }
+        user.isActivated=true ;
+        user.save();
+        return res.status(201).json({message:"Account activated Successfully"})
+        
+    } catch (error) {
+        res.status(500).send('Internal server error');
+        console.log(error)   
+    }    
+  }
+
+//Forget Passsword
+export const Forget = async (req, res)=>{
+    try {
+        const {email} = req.body;
+        const checkEmail = await User.findOne({email: email});
+        if(!checkEmail){
+            return res.status(404).json({
+                message: "Email Not Registered!!!"
+            })
+        }
+        const token = crypto.randomBytes(20).toString("hex");
+        checkEmail.token = token;
+        checkEmail.save();
+        sendMail(email, "password Reset", `Reset Link ${token}`);
+
+        res.status(200).json({
+            message: "Password Reset Successfully"
+        });
+    } catch (error) {
+        res.status(400).json({
+            error: "Error Occured"
+        })
+    }
+}
+
+//Reset token
+export const ResetToken = async(req,res)=>{
 
     try {
        const { token } = req.query;
@@ -133,4 +149,4 @@ export const Login = async (req, res)=>{
       res.status(403).json({message:"unauthorised"});
       console.log(error)
     }
-  }
+}
