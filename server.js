@@ -23,11 +23,13 @@ dataBaseConnection();
 app.use(cors());
 app.use(express.json());
 
+// Apply cors middleware to the HTTP server
+httpServer.use(cors());
+
 //routes
 app.use("/api", userRouter);
 app.use("/chat",isAuthorized, chatRouter);
 app.use("/message", isAuthorized, msgRouter)
-
 app.get("/",(req,res)=>{
     res.status(200).send("server working");
 })
@@ -39,7 +41,6 @@ const httpServer = createServer(app);
 const io = new Server(httpServer, { 
     cors:{
         origin:"*",
-
     },
     pingTimeout:60000
  });
@@ -54,12 +55,9 @@ const io = new Server(httpServer, {
         // Emit online users to the newly connected user
     socket.emit("onlineUsers", Object.keys(onlineUsers));
     console.log(Object.keys(onlineUsers))
-
-
     });
 
     
-
     socket.on("join chat",(room)=>{
         console.log(room)
         socket.join(room)
