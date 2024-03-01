@@ -5,8 +5,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { dataBaseConnection } from "./Config/db.js";
 import { userRouter } from "./routes/userRouter.js";
-// import { isAuthorized } from "./middleware/authenticate.js";
-import { isAuthorized } from "./Middleware/authenticate.js";
+import { isAuthorized } from "./middle_ware/authenticate.js";
 import {chatRouter} from "./routes/chatRouter.js";
 import { msgRouter } from "./routes/messageRouter.js";
 

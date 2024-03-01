@@ -3,7 +3,7 @@ import { Register, allUsers } from "../controllers/userController.js";
 import { Login } from "../controllers/userController.js";
 import { Forget } from "../controllers/userController.js";
 import { ResetToken } from "../controllers/userController.js";
-import { isAuthorized } from "../middleware/authenticate.js";
+import { isAuthorized } from "../middle_ware/authenticate.js";
 
 const router = express.Router();
 
