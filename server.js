@@ -5,7 +5,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { dataBaseConnection } from "./Config/db.js";
 import { userRouter } from "./routes/userRouter.js";
-import { isAuthorized } from "./middleware/authenticate.js";
+// import { isAuthorized } from "./middleware/authenticate.js";
+import { isAuthorized } from "./Middleware/authenticate.js";
 import {chatRouter} from "./routes/chatRouter.js";
 import { msgRouter } from "./routes/messageRouter.js";
 
@@ -37,7 +38,7 @@ const onlineUsers = {};
 const httpServer = createServer(app);
 const io = new Server(httpServer, { 
     cors:{
-        origin: "http://localhost:5173",
+        origin: "*",
     },
     pingTimeout:60000
  });
