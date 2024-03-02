@@ -15,7 +15,7 @@ export const allUsers = async (req, res) => {
       try {
         const users = await User.find({
             ...keyword,
-            _id: { $ne: req.user._id } 
+            _id: { $ne: req.user?._id } 
         }).select('-password');
         res.status(200).json(users);
     } catch (error) {
