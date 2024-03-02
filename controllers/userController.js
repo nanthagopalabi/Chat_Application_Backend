@@ -1,9 +1,7 @@
 import { User } from "../models/userModel.js";
-// import {Email} from "../models/Email.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-// import {sendMail} from "../service/service.js";
 
 export const allUsers = async (req, res) => {
     const keyword = req.query.search
