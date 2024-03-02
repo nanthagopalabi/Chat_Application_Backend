@@ -39,7 +39,7 @@ export const accessChat = async (req, res) => {
 //function to get  chat history
 export const getChat = async (req, res) => {
   try {
-      const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+      const chats = await Chat.find({ users: { $elemMatch: { $eq: req.user?._id } } })
           .populate({
               path: "users",
               select: "-password" // Exclude sensitive information like password
