@@ -11,7 +11,7 @@ const sendMsg = async (req,res)=>{
         return res.status(400).send("Invalid Data passed to request")
     }
     const newMessage={
-        sender:req.user._id,
+        sender:req.user?._id,
         content:content,
         chat: chatId
     }
@@ -41,7 +41,7 @@ export const allMessage=async(req,res)=>{
      
     try {
     
-        const message=await Message.find({chat:req.params.chatId})
+        const message=await Message.find({chat:req.params?.chatId})
         .populate("sender","name pic email")
         .populate("chat")
 
