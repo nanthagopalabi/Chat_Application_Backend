@@ -12,7 +12,7 @@ export const accessChat = async (req, res) => {
       const isChat = await Chat.find({
           isGroupChat: false,
           $and: [
-              { users: { $elemMatch: { $eq: req.user._id } } },
+              { users: { $elemMatch: { $eq: req.user?._id } } },
               { users: { $elemMatch: { $eq: userId } } },
           ]
       }).populate("users", "-password").populate("latestMessage");
@@ -21,9 +21,9 @@ export const accessChat = async (req, res) => {
           res.status(200).send(isChat[0]);
       } else {
           const chatData = {
-              chatName: "Sender's Chat", // Adjust chatName as per your requirements
+              chatName: "Sender's Chat",
               isGroupChat: false,
-              users: [req.user._id, userId], // Ensure correct user IDs are used
+              users: [req.user?._id, userId], 
           };
 
           const createChat = await Chat.create(chatData);
