@@ -99,105 +99,98 @@ export const createGroupChat = async (req, res) => {
   };
 
 //group rename
-export const groupRenaming=async(req,res)=>{
+export const groupRenaming = async (req, res) => {
+  try {
+      const { chatId, chatName } = req.body;
 
-    try {
-       const {chatId,chatName}=req.body
+      const updatedChat = await Chat.findOneAndUpdate({ _id: chatId },
+          { chatName: chatName },
+          {
+              new: true
+          }
+      )?.populate("users", "-password")?.populate("groupAdmin", "-password");
 
-       const updatedChat=await Chat.findOneAndUpdate({_id:chatId},
-        {chatName:chatName},{
-        new:true
-        
-       }).populate("users","-password").populate("groupAdmin","-password")
+      if (!updatedChat) {
+          return res.status(404).send("Unable to find the Chat");
+      }
 
-       if(!updatedChat){
+      return res.status(200).json(updatedChat);
 
-        return res.status(404).send("Unable to find the Chat");
-       }
-
-       return res.status(200).json(updatedChat);
-        
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
-    }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).send("Internal Server Error");
   }
-
-//removing user from group
-export const removeUserFromGroup=async(req,res)=>{      
-    
-     try {
-        const { chatId, userId } = req.body;
-        const chat = await Chat.findById(chatId);
-
-  if (!chat) {
-    res.status(404);
-    throw new Error("Chat Not Found");
-  }
-
-
-  // Check if the requester's ID is in the 'groupAdmin' array
-  if (chat.groupAdmin.toString() !== req.user._id.toString()) {
-    res.status(403);
-    throw new Error("Permission Denied: Only admins can perform this action");
-  }
-
-  // Using the Chat document by pulling the userId from the 'users' array
-  const removed = await Chat.findByIdAndUpdate(
-    chatId,
-    {
-      $pull: { users: userId },
-    },
-    {
-      new: true,
-    }
-  )
-    .populate("users", "-password")
-    .populate("groupAdmin", "-password");
-
-  // Check if the Chat document was not found
-  if (!removed) {
-    res.status(404);
-    throw new Error("Chat Not Found");
-  } else {
-   return  res.status(200).json(removed);
-
-}       
-     } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
-        
-     }
 }
 
-//Add new person to group
-export const addFromGroup=async(req,res)=>{      
-    
-    try {
-       const { chatId, userId } = req.body;
+// Remove user from group
+export const removeUserFromGroup = async (req, res) => {
+  try {
+      const { chatId, userId } = req.body;
+      const chat = await Chat.findById(chatId);
 
-       if (!chatId || !userId) {
-        return res.status(400).json({ error: "Chat ID or User ID is missing." });
-    }
-    
-    // Using the Chat document by pulling the userId from the 'users' array
-    const addNew = await Chat.findByIdAndUpdate(
-      chatId,
-      { $addToSet: { users: userId } }, // Using $addToSet to prevent adding duplicate users
-      { new: true }
-      ).populate("users", "-password").populate("groupAdmin", "-password");
+      if (!chat) {
+          res.status(404);
+          throw new Error("Chat Not Found");
+      }
+
+      // Check if the requester's ID is in the 'groupAdmin' array
+      if (chat.groupAdmin?.toString() !== req.user?._id?.toString()) {
+          res.status(403);
+          throw new Error("Permission Denied: Only admins can perform this action");
+      }
+
+      // Using the Chat document by pulling the userId from the 'users' array
+      const removed = await Chat.findByIdAndUpdate(
+          chatId,
+          {
+              $pull: { users: userId },
+          },
+          {
+              new: true,
+          }
+      )?.populate("users", "-password")?.populate("groupAdmin", "-password");
+
+      // Check if the Chat document was not found
+      if (!removed) {
+          res.status(404);
+          throw new Error("Chat Not Found");
+      } else {
+          return res.status(200).json(removed);
+      }
+
+  } catch (error) {
+      console.error(error);
+      return res.status(500).send("Internal Server Error");
+  }
+}
+
+// Add new person to group
+export const addFromGroup = async (req, res) => {
+  try {
+      const { chatId, userId } = req.body;
+
+      if (!chatId || !userId) {
+          return res.status(400).json({ error: "Chat ID or User ID is missing." });
+      }
+
+      // Using the Chat document by pulling the userId from the 'users' array
+      const addNew = await Chat.findByIdAndUpdate(
+          chatId,
+          { $addToSet: { users: userId } }, // Using $addToSet to prevent adding duplicate users
+          { new: true }
+      )?.populate("users", "-password")?.populate("groupAdmin", "-password");
 
 
       // Check if the Chat document was not found
       if (!addNew) {
-        res.status(404);
-        throw new Error("Unable to Add");
+          res.status(404);
+          throw new Error("Unable to Add");
       } else {
-        return  res.status(200).json(addNew);
-      }       
+          return res.status(200).json(addNew);
+      }
 
-    } catch (error) {
-       console.error(error);
-       return res.status(500).send("Internal Server Error");
-    }
-}  
+  } catch (error) {
+      console.error(error);
+      return res.status(500).send("Internal Server Error");
+  }
+}
